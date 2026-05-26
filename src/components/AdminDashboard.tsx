@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { 
   Key, 
   Lock, 
@@ -88,6 +88,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
   const [vFormFileId, setVFormFileId] = useState("");
   const [vFormChangelog, setVFormChangelog] = useState("");
   const [vFormGameVersion, setVFormGameVersion] = useState("1.20.1");
+  const hasAutoSyncedRef = useRef(false);
 
   // Check URL Hash and config on mount
   useEffect(() => {
@@ -120,6 +121,15 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
       setOauthToken(savedToken);
     }
   }, []);
+
+  useEffect(() => {
+    if (!isAdminLoggedIn) return;
+    if (!folderId || !serviceAccountKey) return;
+    if (hasAutoSyncedRef.current) return;
+
+    hasAutoSyncedRef.current = true;
+    handleSyncFromDrive();
+  }, [isAdminLoggedIn, folderId, serviceAccountKey]);
 
   const handleImportServiceAccountKey = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -226,14 +236,18 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
         const loadedDb = await readFileContent<ModpackDatabase>("", indexId, activeToken);
         const safeModpacks = Array.isArray(loadedDb?.modpacks) ? loadedDb.modpacks : [];
         if (loadedDb) {
-          setDb({ ...loadedDb, modpacks: safeModpacks });
+          const nextDb = { ...loadedDb, modpacks: safeModpacks };
+          setDb(nextDb);
+          localStorage.setItem("modpack_cached_db", JSON.stringify(nextDb));
           success("Đã đồng bộ cơ sở dữ liệu!", `Đã tìm thấy ${safeModpacks.length} Modpack được lập chỉ mục.`);
         } else {
           throw new Error("Tệp index.json rỗng.");
         }
       } else {
         warning("Chưa có cơ sở dữ liệu trên Drive", "Tạo một cơ sở dữ liệu mới để bắt đầu quản trị.");
-        setDb({ lastUpdated: new Date().toISOString(), modpacks: [] });
+        const emptyDb = { lastUpdated: new Date().toISOString(), modpacks: [] };
+        setDb(emptyDb);
+        localStorage.setItem("modpack_cached_db", JSON.stringify(emptyDb));
       }
 
       // Sync settings credentials state into modpack_drive_config in localstorage, locking the administrative panel
@@ -273,6 +287,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
       
       setIndexFileId(id);
       setDb(initialDb);
+      localStorage.setItem("modpack_cached_db", JSON.stringify(initialDb));
       success("Khởi tạo index.json thành công!", "Dữ liệu ban đầu đã cập nhật lên Google Drive.");
     } catch (err: any) {
       error("Lỗi khởi tạo", err.message);
@@ -367,6 +382,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
       setIndexFileId(ids.indexFileId);
       setBackupFileId(ids.backupFileId);
       setDb(updatedDb);
+      localStorage.setItem("modpack_cached_db", JSON.stringify(updatedDb));
       setShowDrawer(false);
       setSelectedPack(updatedPack);
       success("Đã lưu & đồng bộ Drive!", "Dữ liệu (gồm tệp sao lưu) đã cập nhật trực tiếp lên đám mây thành công.");
@@ -398,6 +414,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
       setIndexFileId(ids.indexFileId);
       setBackupFileId(ids.backupFileId);
       setDb(updatedDb);
+      localStorage.setItem("modpack_cached_db", JSON.stringify(updatedDb));
       setSelectedPack(null);
       success("Đã xóa Modpack khỏi đám mây!");
     } catch (err: any) {

@@ -136,10 +136,23 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
   useEffect(() => {
     const savedConfig = localStorage.getItem("modpack_drive_config");
     const savedDemo = localStorage.getItem("modpack_drive_is_demo");
+    const cachedDb = localStorage.getItem("modpack_cached_db");
+
+    if (cachedDb) {
+      try {
+        const parsedCache = JSON.parse(cachedDb) as ModpackDatabase;
+        if (parsedCache?.modpacks) {
+          setDb(parsedCache);
+        }
+      } catch {
+        localStorage.removeItem("modpack_cached_db");
+      }
+    }
     
     if (savedDemo === "true") {
       setIsDemo(true);
       setDb(DEMO_DATABASE);
+      localStorage.setItem("modpack_cached_db", JSON.stringify(DEMO_DATABASE));
       info("Đang hiển thị chế độ Thử nghiệm (Demo)", "Bạn có thể trải nghiệm giao diện người dùng hoàn toàn miễn phí.");
     } else if (savedConfig) {
       try {
@@ -179,6 +192,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
       const content = await readFileContent<ModpackDatabase>("", fileId, token);
       if (content) {
         setDb(content);
+        localStorage.setItem("modpack_cached_db", JSON.stringify(content));
         success("Đã đồng bộ dữ liệu Modpack", "Toàn bộ thông tin mới nhất từ Google Drive đã tải thành công.");
       } else {
         throw new Error("Tệp index.json bị rỗng hoặc lỗi cú pháp.");
@@ -290,6 +304,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
     localStorage.setItem("modpack_drive_is_demo", "true");
     setIsDemo(true);
     setDb(DEMO_DATABASE);
+    localStorage.setItem("modpack_cached_db", JSON.stringify(DEMO_DATABASE));
     success("Kích hoạt Chế độ Thử nghiệm", "Đang tải dữ liệu Modpack RPG & Sky Evolution ảo để trải nghiệm.");
   };
 
@@ -299,6 +314,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
     localStorage.removeItem("modpack_drive_is_demo");
     setConfig(null);
     setDb(null);
+    localStorage.removeItem("modpack_cached_db");
     setIsDemo(false);
     setSelectedModpack(null);
     success("Đã đóng kết nối máy chủ", "Mời bạn kéo thả tệp .alpha mới để đăng nhập.");
@@ -534,7 +550,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/15 px-2.5 py-0.5 rounded-full font-mono">
-                  {isDemo ? "Chế độ Thử nghiệm (Demo)" : "Đã đồng bộ Google Drive"}
+                  Updated
                 </span>
               </div>
               
