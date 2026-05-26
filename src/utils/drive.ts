@@ -216,6 +216,78 @@ export function getDirectDownloadLink(fileId: string, apiKey?: string, accessTok
 }
 
 /**
+ * Tải file Drive bằng Access Token qua fetch để tránh mở link trực tiếp bị Google chặn.
+ */
+export async function downloadDriveFileWithToken(
+  fileId: string,
+  accessToken: string,
+  fileName: string,
+  onProgress?: (percent: number) => void
+): Promise<void> {
+  const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`Lỗi tải file (${fileId}): ${response.statusText}. Chi tiết: ${errorBody}`);
+  }
+
+  const contentLengthHeader = response.headers.get("Content-Length");
+  const total = contentLengthHeader ? Number(contentLengthHeader) : 0;
+
+  if (!response.body) {
+    const blob = await response.blob();
+    onProgress?.(100);
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = fileName || "download.zip";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(objectUrl);
+    return;
+  }
+
+  const reader = response.body.getReader();
+  const chunks: BlobPart[] = [];
+  let received = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (value) {
+      chunks.push(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength));
+      received += value.length;
+      if (total > 0) {
+        const percent = Math.min(100, Math.round((received / total) * 100));
+        onProgress?.(percent);
+      }
+    }
+  }
+
+  if (total === 0) {
+    onProgress?.(100);
+  }
+
+  const blob = new Blob(chunks);
+  const objectUrl = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = fileName || "download.zip";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(objectUrl);
+}
+
+/**
  * Trích xuất Google Drive Folder ID từ URL hoặc trả về giá trị thô nếu đã là ID
  */
 export function extractFolderIdFromUrl(url: string): string {

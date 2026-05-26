@@ -27,8 +27,8 @@ import { useToast } from "./ToastContext";
 import { 
   findFileByName, 
   readFileContent, 
-  getDirectDownloadLink,
-  getAccessTokenFromServiceAccount
+  getAccessTokenFromServiceAccount,
+  downloadDriveFileWithToken
 } from "../utils/drive";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -130,6 +130,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
   // Drag and Drop state
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [downloadProgress, setDownloadProgress] = useState<Record<string, number>>({});
 
   // Load configured server on mount
   useEffect(() => {
@@ -317,8 +318,27 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
         config.serviceAccountKey.client_email,
         config.serviceAccountKey.private_key
       );
-      const link = getDirectDownloadLink(version.fileId, undefined, token);
-      window.open(link, "_blank");
+
+      const progressKey = `${modpack.id}__${version.id}`;
+      setDownloadProgress((prev) => ({ ...prev, [progressKey]: 0 }));
+
+      await downloadDriveFileWithToken(
+        version.fileId,
+        token,
+        version.fileName || `${modpack.id}-${version.id}.zip`,
+        (percent) => {
+          setDownloadProgress((prev) => ({ ...prev, [progressKey]: percent }));
+        }
+      );
+
+      setDownloadProgress((prev) => ({ ...prev, [progressKey]: 100 }));
+      setTimeout(() => {
+        setDownloadProgress((prev) => {
+          const next = { ...prev };
+          delete next[progressKey];
+          return next;
+        });
+      }, 1200);
     } catch (err: any) {
       error("Tải xuống thất bại", `Không thể trao đổi mã dịch vụ Google: ${err.message}`);
     }
@@ -509,26 +529,19 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
         <div className="space-y-6">
           
           {/* Main Title Banner & Connection Status - Bento Cell */}
-          <div className="p-6 rounded-3xl bg-bento-card bento-glow-border bento-glow flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2 text-left">
+          <div className="p-4 rounded-3xl bg-bento-card bento-glow-border bento-glow flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1 text-left">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/15 px-2.5 py-0.5 rounded-full font-mono">
                   {isDemo ? "Chế độ Thử nghiệm (Demo)" : "Đã đồng bộ Google Drive"}
                 </span>
-                
-                {!isDemo && config && (
-                  <span className="text-[10px] font-mono text-neutral-500 truncate max-w-[200px] bg-neutral-950/40 px-2 py-0.5 rounded border border-white/5">
-                    ID: {config.folderId}
-                  </span>
-                )}
               </div>
               
-              <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2 font-display">
-                🎮 Cổng Phân Phối Modpack
+              <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-0 font-display">
+                Modpack Distributer
               </h1>
               <p className="text-xs text-neutral-400 max-w-xl">
-                Công cụ tự động cập nhật, kiểm tra changelog và tải trực tiếp các tệp modpack cực kỳ tiện lợi dành riêng cho game thủ.
               </p>
             </div>
 
@@ -725,7 +738,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
                       <h2 className="text-xl font-black text-white tracking-tight font-display">{selectedModpack.name}</h2>
                       
                       <div className="p-4 rounded-xl bg-neutral-950 border border-white/5 text-xs text-neutral-400 leading-relaxed">
-                        {selectedModpack.description || "Admin chưa điền mô tả cho modpack này."}
+                        {selectedModpack.description || " Chưa có mô tả cho modpack này."}
                       </div>
                     </div>
 
@@ -774,12 +787,32 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
                                 )}
 
                                 {/* Download Action */}
-                                <button
-                                  onClick={() => handleDownloadFile(selectedModpack, v)}
-                                  className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-650/10 cursor-pointer font-display"
-                                >
-                                  <Download className="w-3.5 h-3.5" /> Tải bản này
-                                </button>
+                                {(() => {
+                                  const progressKey = `${selectedModpack.id}__${v.id}`;
+                                  const progress = downloadProgress[progressKey];
+                                  const isDownloading = progress !== undefined;
+
+                                  return (
+                                    <div className="space-y-2">
+                                      <button
+                                        onClick={() => handleDownloadFile(selectedModpack, v)}
+                                        disabled={isDownloading}
+                                        className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-700/60 disabled:cursor-not-allowed text-white font-bold text-xs py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-650/10 cursor-pointer font-display"
+                                      >
+                                        <Download className="w-3.5 h-3.5" /> {isDownloading ? `Đang tải ${progress}%` : "Tải bản này"}
+                                      </button>
+
+                                      {isDownloading && (
+                                        <div className="w-full h-2 rounded-full bg-neutral-800 overflow-hidden border border-white/5">
+                                          <div
+                                            className="h-full bg-indigo-500 transition-all duration-200"
+                                            style={{ width: `${progress}%` }}
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
                               </div>
                             ))
                         )}

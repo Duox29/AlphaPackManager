@@ -16,7 +16,7 @@ function AppContent() {
   const [showGuide, setShowGuide] = useState(false);
 
   return (
-    <div className="min-h-screen bg-bento-bg text-neutral-200 font-sans selection:bg-indigo-600/30 selection:text-white overflow-x-hidden pb-12">
+    <div className="min-h-screen bg-bento-bg text-neutral-200 font-sans selection:bg-indigo-600/30 selection:text-white overflow-x-hidden">
       
       {/* Decorative ambient light gradients in the background */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -33,7 +33,7 @@ function AppContent() {
             </div>
             <div className="text-left">
               <span className="text-sm font-black text-white tracking-tight uppercase block font-display">
-                MODPACK DRIVE
+                ALPHA PACK MANAGER
               </span>
               <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest block -mt-0.5 font-mono">
                 Portal v2.6.5
@@ -76,7 +76,7 @@ function AppContent() {
               onClick={() => setShowGuide(true)}
               className="text-xs text-neutral-400 hover:text-indigo-400 transition-colors font-semibold flex items-center gap-1 cursor-pointer font-display"
             >
-              <HelpCircle className="w-4 h-4 text-indigo-500" /> Hướng dẫn kết nối Drive
+              <HelpCircle className="w-4 h-4 text-indigo-500" />Guide
             </button>
           </div>
 
@@ -84,7 +84,7 @@ function AppContent() {
       </header>
 
       {/* Main Dynamic Viewport Component */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -102,22 +102,19 @@ function AppContent() {
       </main>
 
       {/* Embedded footer */}
-      <footer className="relative z-10 border-t border-neutral-900 bg-neutral-950/40 py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
-          <p className="text-xs text-neutral-500 font-medium">
-            Thiết kế bởi <strong>Expert Frontend Dev & UI/UX Designer</strong>. Bản quyền © 2026.
-          </p>
-          <div className="flex items-center justify-center gap-4 text-[10px] text-neutral-650">
+      <footer className="relative z-10 border-t border-neutral-900 bg-neutral-950/40 py-2 mt-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-650 leading-none">
             <span className="flex items-center gap-1">
-              <HardDrive className="w-3.5 h-3.5" /> Google Drive Static DB
+              <HardDrive className="w-3.5 h-3.5" /> Alpha Survival
             </span>
             <span>•</span>
             <span className="flex items-center gap-1">
-              <ShieldAlert className="w-3.5 h-3.5" /> 100% Client-side Security
+              <ShieldAlert className="w-3.5 h-3.5" /> 100% Thuần virus
             </span>
             <span>•</span>
             <span className="flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5" /> Zero-Backend System
+              <Sparkles className="w-3.5 h-3.5" /> Vô hạn luân hồi
             </span>
           </div>
         </div>

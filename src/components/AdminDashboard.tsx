@@ -552,39 +552,29 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
         <div className="space-y-6">
           
           {/* Dashboard Header Bar */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-bento-card bento-glow-border bento-glow shadow-xl border border-white/5">
-            <div className="space-y-1.5 text-left">
+          <div className="flex items-center justify-between gap-3 p-4 rounded-2xl bg-bento-card bento-glow-border bento-glow shadow-xl border border-white/5">
+            <div className="space-y-1 text-left min-w-0">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-450" />
-                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  QUẢN TRỊ VIÊN ACTIVE
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-450" />
+                <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                  ACTIVE
                 </span>
               </div>
-              <h1 className="text-2xl font-black text-white tracking-tight font-display">⚙️ Bảng Quản Trị Modpack</h1>
-              <p className="text-xs text-neutral-400">Thiết lập kết nối, tạo file cấu hình cấp cho User, định lượng và biên soạn metadata tệp modpack.</p>
+              <h1 className="text-xl md:text-2xl font-black text-white tracking-tight font-display truncate">⚙️ Bảng Quản Trị Modpack</h1>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onShowGuide}
-                className="bg-neutral-900 hover:bg-neutral-850 text-indigo-400 hover:text-indigo-300 border border-white/5 hover:border-indigo-550/30 text-xs font-bold py-2.5 px-4 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-display"
-              >
-                <HelpCircle className="w-4 h-4" /> Tài liệu Hướng dẫn
-              </button>
-              
-              <button
-                onClick={handleAdminLogout}
-                className="text-xs text-neutral-400 hover:text-rose-400 font-bold px-3.5 py-2.5 rounded-xl hover:bg-white/5 transition-all cursor-pointer font-display"
-              >
-                Đăng Xuất
-              </button>
-            </div>
+            <button
+              onClick={handleAdminLogout}
+              className="text-[11px] text-neutral-400 hover:text-rose-400 font-bold px-3 py-2 rounded-lg hover:bg-white/5 transition-all cursor-pointer font-display whitespace-nowrap"
+            >
+              Đăng Xuất
+            </button>
           </div>
 
           {/* Core Settings / GCloud & G-Drive Credentials form */}
           <div className="p-6 rounded-3xl bg-bento-card bento-glow-border bento-glow space-y-6 text-left border border-white/5">
             <h2 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2 font-display">
-              <Settings className="w-4.5 h-4.5 text-indigo-500" /> Cấu hình máy chủ dữ liệu G-Drive
+              <Settings className="w-4.5 h-4.5 text-indigo-500" /> Cấu hình G-Drive
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -605,7 +595,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                   className="w-full bg-neutral-950/80 border border-white/5 focus:border-indigo-500 text-xs text-neutral-200 py-3 px-4 rounded-xl outline-none transition-all font-mono"
                 />
                 {folderId && (
-                  <p className="text-[10px] text-neutral-500 font-mono mt-1">Dò tìm Folder ID: <span className="text-indigo-400">{folderId}</span></p>
+                  <p className="text-[10px] text-neutral-500 font-mono mt-1">Folder ID: <span className="text-indigo-400">{folderId}</span></p>
                 )}
               </div>
 
@@ -617,7 +607,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                   id="admin-access-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mật khẩu bảo vệ tab quản trị (Mặc định: admin123)"
+                  placeholder="Mật khẩu bảo vệ tab quản trị"
                   className="w-full bg-neutral-950/80 border border-white/5 focus:border-indigo-500 text-xs text-neutral-200 py-3 px-4 rounded-xl outline-none transition-all font-mono"
                 />
               </div>
@@ -859,7 +849,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                 {selectedPack ? (
                   <div className="p-5 rounded-2xl bg-neutral-900 border border-indigo-500/30 bg-indigo-500/[0.01] shadow-2xl space-y-5">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Xem nhanh Metadata</h3>
+                      <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Metadata</h3>
                       <button 
                         onClick={() => setSelectedPack(null)}
                         className="text-neutral-400 hover:text-white transition-colors"
