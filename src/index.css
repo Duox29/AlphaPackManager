@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-bento-bg: #09090b;
+  --color-bento-card: #141416;
+  --color-bento-border: rgba(255, 255, 255, 0.08);
+}
+
+@utility bento-glow {
+  box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.12), 0 0 20px -5px rgba(168, 85, 247, 0.06);
+}
+
+@utility bento-card-gradient {
+  background: linear-gradient(135deg, rgba(20, 20, 22, 0.9) 0%, rgba(10, 10, 12, 0.9) 100%);
+}
+
+@utility bento-glow-border {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility bento-glow-amber {
+  box-shadow: 0 0 30px -5px rgba(245, 158, 11, 0.12);
+}
+
+@utility bento-glow-emerald {
+  box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.12);
+}

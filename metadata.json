@@ -1,0 +1,6 @@
+{
+  "name": "Drive Modpack Manager",
+  "description": "Hệ thống quản lý Modpack game trực tiếp từ Google Drive, tích hợp sao lưu tự động và phân phối tệp cấu hình mã hóa cho game thủ.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
