@@ -7,6 +7,10 @@ export default defineConfig(() => {
   return {
     base: process.env.BASE_PATH || '/',
     plugins: [react(), tailwindcss()],
+    build: {
+      outDir: 'docs',
+      emptyOutDir: true,
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
