@@ -5,10 +5,9 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: process.env.BASE_PATH || '/',
     plugins: [react(), tailwindcss()],
     build: {
-      outDir: 'docs',
+      outDir: 'dist',
       emptyOutDir: true,
     },
     resolve: {
