@@ -43,12 +43,7 @@ export default function GCloudGuide({ onClose }: GCloudGuideProps) {
 
         {/* Content Body */}
         <div className="p-6 overflow-y-auto max-h-[70vh] space-y-8 text-neutral-300 text-sm leading-relaxed">
-          
-          {/* Quick Info */}
-          <div className="p-4 rounded-lg bg-indigo-500/5 border border-indigo-500/10 text-indigo-200 text-left">
-            <strong>💡 Tổng quan cơ chế mới:</strong> Hệ thống hoạt động 100% Client-side (SPA). Cả người chơi (User) và Quản trị viên (Admin) không cần đăng nhập Google OAuth. Mọi giao dịch đọc/ghi diễn ra qua một **Google Cloud Service Account** được mã hóa gọn gàng trong tệp <code>.alpha</code>.
-          </div>
-
+    
           {/* Step 1 */}
           <div className="space-y-3 text-left">
             <div className="flex items-center gap-2 text-white font-semibold">
@@ -106,11 +101,6 @@ export default function GCloudGuide({ onClose }: GCloudGuideProps) {
             </div>
             <div className="pl-8 space-y-2">
               <p>Bạn bắt buộc phải chia sẻ thư mục trên Google Drive của mình với tài khoản Service Account vừa tạo:</p>
-              <div className="p-3 bg-neutral-950 rounded border border-neutral-800 text-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-neutral-400">
-                <div className="text-left font-sans">
-                  Hãy mở tệp JSON key đã tải, tìm tới trường: <code>"client_email": "<strong>your-service-account@project.iam.gserviceaccount.com</strong>"</code>
-                </div>
-              </div>
               <p className="font-medium text-neutral-200">Các bước gán quyền thư mục:</p>
               <ol className="list-decimal pl-5 space-y-1 text-neutral-450">
                 <li>Vào Google Drive, nhấn chuột phải vào thư mục Modpack của bạn rồi chọn <strong>Chia sẻ (Share) &gt; Chia sẻ (Share)</strong>.</li>

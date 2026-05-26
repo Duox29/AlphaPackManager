@@ -36,7 +36,7 @@ function AppContent() {
                 ALPHA PACK MANAGER
               </span>
               <span className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest block -mt-0.5 font-mono">
-                Portal v2.6.5
+                Portal v0.0.1
               </span>
             </div>
           </div>

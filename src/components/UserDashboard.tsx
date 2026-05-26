@@ -683,11 +683,17 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
                             
                             {/* Graphic Header / Banner */}
                             <div className={`relative h-28 w-full rounded-xl bg-gradient-to-br ${getGradientFromId(p.id)} flex items-center justify-center p-4 overflow-hidden border border-white/5`}>
+                              <div className="absolute -top-8 -left-6 w-24 h-24 rounded-full bg-white/15 blur-2xl" />
+                              <div className="absolute -bottom-10 right-2 w-28 h-28 rounded-full bg-black/20 blur-2xl" />
+                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.28),transparent_35%),radial-gradient(circle_at_80%_85%,rgba(255,255,255,0.12),transparent_40%)]" />
                               <div className="absolute inset-0 bg-black/20 mix-blend-overlay" />
                               <div className="absolute top-2 right-2 bg-neutral-950/90 backdrop-blur border border-white/10 px-2.5 py-0.5 rounded-md text-[9px] font-bold text-white uppercase tracking-wider font-mono">
                                 {p.category || "General"}
                               </div>
-                              <h3 className="text-lg font-black text-white text-center drop-shadow-md tracking-tight w-full truncate font-display">
+                              <div className="absolute bottom-2 left-2 text-[9px] text-white/85 font-mono uppercase tracking-wider bg-black/20 border border-white/15 rounded px-2 py-0.5">
+                                {activeVersCount} phiên bản
+                              </div>
+                              <h3 className="relative z-10 text-lg font-black text-white text-center drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] tracking-tight w-full truncate font-display">
                                 {p.name}
                               </h3>
                             </div>

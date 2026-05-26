@@ -80,7 +80,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
   const [formId, setFormId] = useState("");
   const [formName, setFormName] = useState("");
   const [formDesc, setFormDesc] = useState("");
-  const [formCategory, setFormCategory] = useState("");
+  const [formCategory, setFormCategory] = useState("TECH");
   const [formVersions, setFormVersions] = useState<ModpackVersion[]>([]);
   
   // Version addition sub-form state
@@ -340,11 +340,14 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
     }
 
     // 1. Build Modpack entry object
+    const allowedCategories = ["TECH", "MAGIC", "RPG", "MIXED", "HORROR"];
+    const normalizedCategory = (formCategory || "").trim().toUpperCase();
+
     const updatedPack: Modpack = {
       id: formId.trim().toLowerCase().replace(/\s+/g, "-"),
       name: formName.trim(),
       description: formDesc.trim(),
-      category: formCategory.trim() || "Chung",
+      category: allowedCategories.includes(normalizedCategory) ? normalizedCategory : "TECH",
       versions: formVersions,
       createdAt: drawerMode === "create" ? new Date().toISOString() : (selectedPack?.createdAt || new Date().toISOString()),
       updatedAt: new Date().toISOString(),
@@ -430,7 +433,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
     setFormId("");
     setFormName("");
     setFormDesc("");
-    setFormCategory("");
+    setFormCategory("TECH");
     setFormVersions([]);
     
     setVFormId("");
@@ -446,7 +449,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
     setFormId(pack.id);
     setFormName(pack.name);
     setFormDesc(pack.description || "");
-    setFormCategory(pack.category || "");
+    setFormCategory((pack.category || "TECH").toUpperCase());
     setFormVersions(pack.versions || []);
 
     setVFormId("");
@@ -949,10 +952,9 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
               <div className="flex items-center justify-between px-6 py-4 bg-neutral-950 border-b border-neutral-800 flex-shrink-0 text-left">
                 <div className="space-y-0.5">
                   <h3 className="text-base font-black text-white">
-                    {drawerMode === "create" ? "✨ Lập Thêm Modpack Mới" : `⚙️ Chỉnh Sửa Modpack`}
+                    {drawerMode === "create" ? "✨ Lập Thêm Modpack Mới" : `⚙️ Chỉnh Sửa thông tin`}
                   </h3>
                   <p className="text-xs text-neutral-400">
-                    {drawerMode === "create" ? "Nhập metadata ban đầu và gắn file nén zip" : `Cập nhật chỉnh sửa đổi tên hoặc chép changelog`}
                   </p>
                 </div>
 
@@ -1000,14 +1002,18 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                 {/* Sub-Metadata Category and Image */}
                 <div className="space-y-1.5">
                   <label htmlFor="form-category" className="text-xs text-neutral-400 font-bold uppercase tracking-wider">Thể loại (Category / Tag):</label>
-                  <input
-                    type="text"
+                  <select
                     id="form-category"
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    placeholder="vd: RPG / Sinh Tồn, Skyblock, Magic & Tech..."
-                    className="w-full bg-neutral-950 border border-neutral-800 focus:border-indigo-500 text-xs text-white py-2 px-3 rounded-lg outline-none transition-all"
-                  />
+                    className="w-full bg-neutral-950 border border-neutral-800 focus:border-indigo-500 text-xs text-white py-2 px-3 rounded-lg outline-none transition-all cursor-pointer"
+                  >
+                    <option value="TECH">TECH</option>
+                    <option value="MAGIC">MAGIC</option>
+                    <option value="RPG">RPG</option>
+                    <option value="MIXED">MIXED</option>
+                    <option value="HORROR">HORROR</option>
+                  </select>
                 </div>
 
                 {/* Description */}
@@ -1026,14 +1032,11 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                 {/* VERSIONS ATTACHMENT PORTION */}
                 <div className="space-y-4 border-t border-neutral-800 pt-4">
                   <h4 className="text-xs font-black text-white uppercase tracking-wider flex items-center gap-1.5">
-                    <Layers className="w-4 h-5 text-indigo-500" /> Quản lý các file phiên bản (.zip) gắn kết
+                    <Layers className="w-4 h-5 text-indigo-500" /> Quản lý các file phiên bản
                   </h4>
 
                   {/* Attachment Form Box */}
                   <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-850 space-y-3">
-                    <p className="text-[10px] text-neutral-500 leading-snug">
-                      Ghép nối một tệp tin zip có sẵn từ bộ nhớ đám mây của bạn vào mốc phát hành của Modpack dạng cơ sở dữ liệu.
-                    </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       
@@ -1088,7 +1091,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                         id="vform-changelog"
                         value={vFormChangelog}
                         onChange={(e) => setVFormChangelog(e.target.value)}
-                        placeholder="Nhập những cập nhật chính (Dùng dấu '+' ở đầu dòng để dòng hiển thị đẹp hơn)..."
+                        placeholder="Changelog..."
                         rows={2}
                         className="w-full bg-neutral-900 border border-neutral-800 focus:border-indigo-500 text-[11px] text-white py-1.5 px-2.5 rounded outline-none resize-none leading-relaxed font-mono"
                       />
