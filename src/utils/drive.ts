@@ -188,17 +188,20 @@ export async function saveDatabaseWithBackup(
   const backupString = JSON.stringify(backupDatabase, null, 2);
 
   // 2. Lưu file backup index_backup.json
-  const newBackupId = await uploadFileToFolder(
-    accessToken,
-    folderId,
-    "index_backup.json",
-    backupString,
-    backupFileId
-  );
+  // Chỉ PATCH khi đã có backupFileId, tránh tạo mới (POST) gây lỗi quota với Service Account.
+  const newBackupId = backupFileId
+    ? await uploadFileToFolder(
+        accessToken,
+        folderId,
+        "index_backup.json",
+        backupString,
+        backupFileId
+      )
+    : backupFileId;
 
   return {
     indexFileId: newIndexId,
-    backupFileId: newBackupId,
+    backupFileId: newBackupId ?? "",
   };
 }
 

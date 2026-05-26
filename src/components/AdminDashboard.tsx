@@ -210,8 +210,9 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
       // 1. Find or List files
       info("Đang dò quét thư mục...", "Đang tải danh sách các tệp tin .zip trên thư mục Drive.");
       const files = await listFiles("", folderId, activeToken);
-      
-      const zipFiles = files.filter((f) => f.name.toLowerCase().endsWith(".zip"));
+      const safeFiles = Array.isArray(files) ? files : [];
+
+      const zipFiles = safeFiles.filter((f) => f?.name?.toLowerCase?.().endsWith(".zip"));
       setDriveFiles(zipFiles);
 
       // 2. Resolve index.json database file
@@ -223,9 +224,10 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
 
       if (indexId) {
         const loadedDb = await readFileContent<ModpackDatabase>("", indexId, activeToken);
+        const safeModpacks = Array.isArray(loadedDb?.modpacks) ? loadedDb.modpacks : [];
         if (loadedDb) {
-          setDb(loadedDb);
-          success("Đã đồng bộ cơ sở dữ liệu!", `Đã tìm thấy ${loadedDb.modpacks.length} Modpack được lập chỉ mục.`);
+          setDb({ ...loadedDb, modpacks: safeModpacks });
+          success("Đã đồng bộ cơ sở dữ liệu!", `Đã tìm thấy ${safeModpacks.length} Modpack được lập chỉ mục.`);
         } else {
           throw new Error("Tệp index.json rỗng.");
         }
@@ -485,12 +487,12 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
   const getUnmappedFiles = (): DriveFileInfo[] => {
     if (!db) return driveFiles;
     const mappedIds = new Set<string>();
-    db.modpacks.forEach((p) => {
-      p.versions.forEach((v) => {
-        mappedIds.add(v.fileId);
+    (db.modpacks || []).forEach((p) => {
+      (p.versions || []).forEach((v) => {
+        if (v?.fileId) mappedIds.add(v.fileId);
       });
     });
-    return driveFiles.filter((f) => !mappedIds.has(f.id));
+    return (driveFiles || []).filter((f) => !mappedIds.has(f.id));
   };
 
   const unmappedFiles = getUnmappedFiles();
