@@ -39,7 +39,6 @@ import {
   getAccessTokenFromServiceAccount
 } from "../utils/drive";
 import { motion, AnimatePresence } from "motion/react";
-import { DEMO_DATABASE } from "./UserDashboard";
 
 interface AdminDashboardProps {
   onShowGuide: () => void;

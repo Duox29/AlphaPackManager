@@ -11,8 +11,7 @@ import {
   Grid, 
   Layers, 
   RefreshCw, 
-  FileCode, 
-  Upload, 
+  Upload,
   X,
   Sparkles,
   Calendar,
@@ -32,83 +31,6 @@ import {
 } from "../utils/drive";
 import { motion, AnimatePresence } from "motion/react";
 
-// Mock database to let users try the application instantly if they have no Google Drive credentials!
-export const DEMO_DATABASE: ModpackDatabase = {
-  lastUpdated: new Date().toISOString(),
-  modpacks: [
-    {
-      id: "sky-evolution",
-      name: "Rồng Thiêng Sky Evolution",
-      description: "Thế giới Skyblock hoàn toàn đổi mới với cơ chế chế tạo tự động, hệ thống nhiệm vụ phong phú chứa hơn 500+ Quest và các cụm hòn đảo bay huyền bí khó nhằn.",
-      category: "Skyblock",
-      createdAt: "2026-01-10T12:00:00Z",
-      updatedAt: "2026-05-25T08:30:00Z",
-      versions: [
-        {
-          id: "v2.1.0",
-          fileName: "sky_evolution_v2.1.0_tech.zip",
-          fileId: "demo-file-1",
-          uploadedAt: "2026-05-20T10:15:00Z",
-          size: 1458920140, // ~1.36 GB
-          changelog: "+ Nâng cấp Forge lên phiên bản 47.2\n+ Cập nhật AE2 và Industrial Foregoing tối ưu hoá VPS\n+ Thêm 45 nhiệm vụ huyền thoại mới ở Nhánh Không Gian\n- Sửa lỗi văng game lúc chế tạo bàn thờ Astral Sorcery\n* Fix lỗi hiệu năng liên quan tới thực thể rác.",
-          gameVersion: "1.20.1",
-          isActive: true
-        },
-        {
-          id: "v2.0.0",
-          fileName: "sky_evolution_v2.0.0_major.zip",
-          fileId: "demo-file-2",
-          uploadedAt: "2026-04-12T09:00:00Z",
-          size: 1210459301, // ~1.12 GB
-          changelog: "+ Bản phát hành chính thức Sky Evolution 2.0\n+ Reset thế giới và thêm mod quan sát hành tinh\n+ Tích hợp OptiFine và các mod tối ưu hoá hiệu năng cực cao.",
-          gameVersion: "1.20.1",
-          isActive: true
-        }
-      ]
-    },
-    {
-      id: "rlcraft-reborn",
-      name: "RLCraft Vietsub Reborn",
-      description: "Hành trình sinh tồn siêu khó cổ điển được làm mới lại trên phiên bản game mới hơn. Modpack dành cho những game thủ cứng cựa, mong muốn thử thách các giới hạn sinh tồn của bản thân.",
-      category: "RPG / Sinh Tồn",
-      createdAt: "2026-02-15T15:00:00Z",
-      updatedAt: "2026-05-22T14:20:00Z",
-      versions: [
-        {
-          id: "v1.2.6",
-          fileName: "rlcraft_reborn_v1.2.6_fixed.zip",
-          fileId: "demo-file-3",
-          uploadedAt: "2026-05-22T14:15:00Z",
-          size: 489304859, // ~466 MB
-          changelog: "+ Thích ứng hoá hoàn toàn ngôn ngữ Tiếng Việt\n+ Thêm 12 hầm ngục (Dungeon) mới rải rác xung quanh spawn\n* Sửa lỗi rồng lửa hồi máu bất thường\n* Cân bằng chỉ số giáp vẩy rồng giảm 10% sát thương nhận vào.",
-          gameVersion: "1.12.2",
-          isActive: true
-        }
-      ]
-    },
-    {
-      id: "magic-academy",
-      name: "Học Viện Pháp Thuật & Công Nghệ",
-      description: "Sự dung hợp đỉnh cao giữa hai trường phái Magic và Tech. Học pháp thuật của các vị thần song song với việc xây dựng lò phản ứng hạt nhân lượng tử khổng lồ.",
-      category: "Magic & Tech",
-      createdAt: "2026-03-01T08:00:00Z",
-      updatedAt: "2026-05-18T11:00:00Z",
-      versions: [
-        {
-          id: "v1.0.4",
-          fileName: "magic_tech_academy_v1.0.4.zip",
-          fileId: "demo-file-4",
-          uploadedAt: "2026-05-18T11:00:00Z",
-          size: 893405903, // ~852 MB
-          changelog: "+ Thích hợp Botania bản lồng tiếng Việt hóa\n+ Thêm cơ chế bay năng lượng Jetpack của Mekanism\n* Tối ưu RAM khởi động (Chỉ cần tối thiểu 6GB RAM).",
-          gameVersion: "1.16.5",
-          isActive: true
-        }
-      ]
-    }
-  ]
-};
-
 interface UserDashboardProps {
   onAdminRequest: () => void;
 }
@@ -118,7 +40,6 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
   
   const [db, setDb] = useState<ModpackDatabase | null>(null);
   const [config, setConfig] = useState<AppConfig | null>(null);
-  const [isDemo, setIsDemo] = useState(false);
   const [loading, setLoading] = useState(false);
   
   // Search & Filters
@@ -135,7 +56,6 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
   // Load configured server on mount
   useEffect(() => {
     const savedConfig = localStorage.getItem("modpack_drive_config");
-    const savedDemo = localStorage.getItem("modpack_drive_is_demo");
     const cachedDb = localStorage.getItem("modpack_cached_db");
 
     if (cachedDb) {
@@ -149,12 +69,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
       }
     }
     
-    if (savedDemo === "true") {
-      setIsDemo(true);
-      setDb(DEMO_DATABASE);
-      localStorage.setItem("modpack_cached_db", JSON.stringify(DEMO_DATABASE));
-      info("Đang hiển thị chế độ Thử nghiệm (Demo)", "Bạn có thể trải nghiệm giao diện người dùng hoàn toàn miễn phí.");
-    } else if (savedConfig) {
+    if (savedConfig) {
       try {
         const parsed = JSON.parse(savedConfig) as AppConfig;
         setConfig(parsed);
@@ -283,9 +198,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
           
           // Successful test! Save
           localStorage.setItem("modpack_drive_config", JSON.stringify(parsedConfig));
-          localStorage.removeItem("modpack_drive_is_demo");
           setConfig(parsedConfig);
-          setIsDemo(false);
           await fetchDatabaseFromDrive(parsedConfig);
         } catch (fetchErr: any) {
           throw new Error(`Khóa Service Account chưa được chia sẻ quyền xem/độc đối với Thư mục Drive này. Chi tiết: ${fetchErr.message}`);
@@ -299,33 +212,17 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
     reader.readAsText(file);
   };
 
-  // Load demo mode instantly
-  const handleEnableDemo = () => {
-    localStorage.setItem("modpack_drive_is_demo", "true");
-    setIsDemo(true);
-    setDb(DEMO_DATABASE);
-    localStorage.setItem("modpack_cached_db", JSON.stringify(DEMO_DATABASE));
-    success("Kích hoạt Chế độ Thử nghiệm", "Đang tải dữ liệu Modpack RPG & Sky Evolution ảo để trải nghiệm.");
-  };
-
   // Reset current config
   const handleResetConfig = () => {
     localStorage.removeItem("modpack_drive_config");
-    localStorage.removeItem("modpack_drive_is_demo");
     setConfig(null);
     setDb(null);
     localStorage.removeItem("modpack_cached_db");
-    setIsDemo(false);
     setSelectedModpack(null);
     success("Đã đóng kết nối máy chủ", "Mời bạn kéo thả tệp .alpha mới để đăng nhập.");
   };
 
   const handleDownloadFile = async (modpack: Modpack, version: ModpackVersion) => {
-    if (isDemo) {
-      info("Đang giả lập tải xuống Modpack", `Hệ thống giả lập tải tệp "${version.fileName}" của Modpack "${modpack.name}".`);
-      return;
-    }
-
     if (!config) return;
     
     try {
@@ -457,7 +354,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
           {/* Welcome Text */}
           <div className="text-center space-y-3">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider font-mono">
-              <Sparkles className="w-3.5 h-3.5" /> Client Portal
+             Client Portal
             </div>
             <h1 className="text-4xl font-extrabold text-white tracking-tight sm:text-5xl font-display">
               Cổng Tải Modpack Trực Tiếp
@@ -504,25 +401,6 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
             </div>
           </div>
 
-          {/* Demo Fallback Area */}
-          <div className="rounded-2xl bg-bento-card bento-glow-border bento-glow bento-glow-amber p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="space-y-1 text-center sm:text-left">
-              <h4 className="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center justify-center sm:justify-start gap-1.5 font-display">
-                <Sparkles className="w-4 h-4 text-amber-400" /> Bạn chưa có máy chủ dữ liệu riêng?
-              </h4>
-              <p className="text-xs text-neutral-400 max-w-md">
-                Kích hoạt chế độ Thử nghiệm để kiểm định tính năng, bộ lọc tìm kiếm và phong cách thiết kế với dữ liệu ảo ngay lập tức.
-              </p>
-            </div>
-            
-            <button
-              onClick={handleEnableDemo}
-              className="w-full sm:w-auto bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-neutral-950 font-bold text-xs py-2.5 px-5 rounded-xl border border-amber-500/10 hover:border-amber-500 transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer font-display"
-            >
-              <FileCode className="w-4 h-4" /> Dùng Thử Dữ Liệu Demo
-            </button>
-          </div>
-
           {/* Guide Alert */}
           <div className="text-center">
             <p className="text-xs text-neutral-500">
@@ -540,7 +418,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
         </div>
       )}
 
-      {/* WITH ACTIVE SERVER (User has config or demo) */}
+      {/* WITH ACTIVE SERVER */}
       {!loading && db && (
         <div className="space-y-6">
           
@@ -563,7 +441,7 @@ export default function UserDashboard({ onAdminRequest }: UserDashboardProps) {
 
             <div className="flex items-center gap-3 self-end md:self-center">
               <button
-                onClick={() => isDemo ? handleEnableDemo() : fetchDatabaseFromDrive(config!)}
+                onClick={() => fetchDatabaseFromDrive(config!)}
                 className="p-3 rounded-xl bg-neutral-950 text-neutral-300 hover:text-white border border-white/5 hover:bg-neutral-900 transition-all cursor-pointer"
                 title="Làm mới dữ liệu từ Google Drive"
               >
