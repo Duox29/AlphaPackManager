@@ -28,8 +28,8 @@ function AppContent() {
           
           {/* Brand/Logo Assembly */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/20 bento-glow-border">
-              <Gamepad2 className="w-5.5 h-5.5" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden bento-glow-border shadow-lg shadow-indigo-600/20">
+              <img src="/logo.png" alt="Alpha Logo" className="w-full h-full object-cover" />
             </div>
             <div className="text-left">
               <span className="text-sm font-black text-white tracking-tight uppercase block font-display">

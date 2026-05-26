@@ -717,9 +717,9 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                   
                   <button
                     onClick={() => setActiveSubTab("metadata")}
-                    className={`flex-1 py-2.5 text-center text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
+                    className={`flex-1 py-2.5 text-center text-xs font-bold rounded-lg border border-transparent transition-all flex items-center justify-center gap-2 ${
                       activeSubTab === "metadata"
-                        ? "bg-neutral-900 border border-neutral-800 text-white"
+                        ? "bg-neutral-900 border-neutral-800 text-white"
                         : "text-neutral-450 hover:text-neutral-200"
                     }`}
                   >
@@ -728,9 +728,9 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
 
                   <button
                     onClick={() => setActiveSubTab("unmapped")}
-                    className={`flex-1 py-2.5 text-center text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${
+                    className={`flex-1 py-2.5 text-center text-xs font-bold rounded-lg border border-transparent transition-all flex items-center justify-center gap-2 ${
                       activeSubTab === "unmapped"
-                        ? "bg-neutral-900 border border-neutral-800 text-white"
+                        ? "bg-neutral-900 border-neutral-800 text-white"
                         : "text-neutral-450 hover:text-neutral-200"
                     }`}
                   >
@@ -816,7 +816,7 @@ export default function AdminDashboard({ onShowGuide }: AdminDashboardProps) {
                 {activeSubTab === "unmapped" && (
                   <div className="space-y-4">
                     <p className="text-xs text-neutral-400 leading-snug">
-                      Các tệp tin nén <code>.zip</code> dưới đây được tìm thấy trên thư mục Drive của bạn nhưng chưa được thêm vào database metadata. Người chơi sẽ không thể xem hoặc tải nếu không khai báo chúng.
+                      Các tệp tin nén <code>.zip</code> dưới đây được tìm thấy trên thư mục Drive của bạn nhưng chưa được thêm metadata. Người chơi sẽ không thể xem hoặc tải nếu không khai báo chúng.
                     </p>
 
                     {unmappedFiles.length === 0 ? (
