@@ -4,6 +4,7 @@
  */
 
 import { useState } from "react";
+import logo from "./assets/logo.png";
 import { ToastProvider, useToast } from "./components/ToastContext";
 import UserDashboard from "./components/UserDashboard";
 import AdminDashboard from "./components/AdminDashboard";
@@ -29,7 +30,7 @@ function AppContent() {
           {/* Brand/Logo Assembly */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl overflow-hidden bento-glow-border shadow-lg shadow-indigo-600/20">
-              <img src="/logo.png" alt="Alpha Logo" className="w-full h-full object-cover" />
+              <img src={logo} alt="Alpha Logo" className="w-full h-full object-cover" />
             </div>
             <div className="text-left">
               <span className="text-sm font-black text-white tracking-tight uppercase block font-display">
